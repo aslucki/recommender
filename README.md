@@ -1,4 +1,5 @@
 # Recommender
+![image info](./homepage.png)
 
 ## Environment setup
 1. Build docker image:  
@@ -25,7 +26,3 @@ For example you can run:
 From within container run:  
 `make lab`
 Jupyter lab can be useful when developing on remote machines.
-
-### Unit tests
-We use unit test framework. To execute tests from within the container run:  
-`make test` 
