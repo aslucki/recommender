@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommender</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href={{ url_for("static", filename="css/style.css") }}>
+</head>
+
+<body>
+
+<div class="box" id="particles-js"></div>
+<div class="container py-5">
+  <header class="text-center">
+    <h1 class="display-4 text-white">Recommender</h1>
+    <div class="autocomplete">
+        <form autocomplete="Off" action="{{ url_for('process') }}" method="post">
+            <input id="searchBar" type="text" name="searchBar" placeholder="Company name">
+            <input id="submitBtn" type="submit" value="Find similar companies!">
+        </form>
+    </div>
+  </header>
+</div>
+
+<div id="tableBlock">
+    {% block tableBlock %}{% endblock %}
+</div>
+
+
+<script> var companies = {{ companies|tojson }}; </script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+<script src={{ url_for("static", filename="js/autocomplete.js") }}></script>
+<script src={{ url_for("static", filename="js/particles.js") }}></script>
+<script src={{ url_for("static", filename="js/apps.js") }}></script>
+</body>
+</html>

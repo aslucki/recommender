@@ -1,0 +1,35 @@
+{% extends "home.html" %}
+{% block tableBlock %}
+<div class="row py-5">
+    <div class="col-lg-10 mx-auto">
+      <div class="card rounded shadow border-0">
+        <div class="card-body p-5 bg-white rounded">
+          <div class="table-responsive">
+              {% if query %}
+                <h3>Companies similar to {{ query }}: </h3>
+              {% endif %}
+            <table id="table" style="width:100%" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                    {% for column_name in table['columns'] %}
+                        <td>{{ column_name }}</td>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                {% for row in table['rows'] %}
+                <tr class="mainEntry expand">
+                    {% for value in row %}
+                    <td> {{ value }}</td>
+                    {% endfor %}
+                </tr>
+                <tr style="display: none;">
+                    <td colspan={{table['columns']|length}}>{{ table['details'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
