@@ -1,5 +1,5 @@
 # Recommender
-![image info](./homepage.png)
+![image info](homepage_screen.png)
 
 ## Environment setup
 1. Build docker image:  
