@@ -24,3 +24,6 @@ From withing the container run:
 
 Application will be available from your browser at:  
 `http://127.0.0.1:8888/`
+
+To view all companies in the database go to:  
+`http://127.0.0.1:8888/companies`
