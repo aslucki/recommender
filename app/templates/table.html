@@ -14,19 +14,36 @@
                     {% for column_name in table['columns'] %}
                         <td>{{ column_name }}</td>
                     {% endfor %}
+                        {% if not hide_options %}
+                        <td> Options </td>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for row in table['rows'] %}
-                <tr class="mainEntry expand">
-                    {% for value in row %}
-                    <td> {{ value }}</td>
-                    {% endfor %}
-                </tr>
-                <tr style="display: none;">
-                    <td colspan={{table['columns']|length}}>{{ table['details'] }}</td>
-                </tr>
+                    <tr class="mainEntry expand">
+                        {% for value in row %}
+                            <td> {{ value }}</td>
+                        {% endfor %}
+                        {% if not hide_options %}
+                            <td>
+                                <button type="button" class="btn btn-primary store">Save for later</button>
+                                <button type="button" class="btn btn-danger store">Discard</button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% if table['details'] %}
+                        <tr style="display: none;">
+                            <td colspan={{ table['columns']|length }}>
+                            Most similar feature: {{ table['details'][loop.index-1][0] }} <br/>
+                            Most different feature: {{ table['details'][loop.index-1][-1] }}
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </table>
+              {% if not hide_options %}
+                <p><a href="{{ url_for('display_stored') }}">Check saved entries!</a></p>
+              {% endif %}
           </div>
         </div>
       </div>
