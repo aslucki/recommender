@@ -1,11 +1,43 @@
 $(function() {
   $(document).ready(function() {
     autocomplete(document.getElementById("searchBar"), companies);
-    $('.mainEntry').click(function(){
+
+    $('.store').click(function (event) {
+        event.stopPropagation();
+
+        var values = $(this).closest("tr").text() + '\n' + $(this).text();
+        var button = $(this);
+
+
+        $.ajax({
+            url: 'store',
+            type: 'POST',
+            data: JSON.stringify(values),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            async: true,
+            cache: false,
+            processData: false,
+            success: function (result) {
+                button.text("Saved");
+                button.prop('disabled', true);
+            },
+            error: function(){
+                alert("error in ajax form submission");
+            }
+        });
+
+        return false;
+       });
+
+     $('.mainEntry').click(function(){
         $(this).toggleClass('expand').nextUntil('tr.mainEntry').slideToggle(100);
      });
+
   });
 });
+
+
 
 
 
