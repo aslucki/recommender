@@ -7,7 +7,7 @@ $(function() {
 
         var values = $(this).closest("tr").text() + '\n' + $(this).text();
         var button = $(this);
-
+        var allButtons = $($(this).closest('td')).find('button');
 
         $.ajax({
             url: 'store',
@@ -20,7 +20,7 @@ $(function() {
             processData: false,
             success: function (result) {
                 button.text("Saved");
-                button.prop('disabled', true);
+                allButtons.prop('disabled', true);
             },
             error: function(){
                 alert("error in ajax form submission");

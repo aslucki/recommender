@@ -1,30 +1,17 @@
-import os
-
 import pandas as pd
 
 
-def load_stored_ids(database_path):
-    saved_entries = set()
-    discarded_entries = set()
+def load_stored_ids(entries):
+    saved_entries = []
+    discarded_entries = []
 
-    try:
-        with open(os.path.join(database_path,
-                               'saved_entries.txt'), 'r') as f:
-            ids = [entry.strip() for entry in f.readlines()]
-            saved_entries.update(ids)
-    except FileNotFoundError:
+    for entry in entries:
+        if entry.is_discarded:
+            discarded_entries.append(entry.startup_id)
+        else:
+            saved_entries.append(entry.startup_id)
 
-        pass
-
-    try:
-        with open(os.path.join(database_path,
-                               'discarded_entries.txt'), 'r') as f:
-            ids = [entry.strip() for entry in f.readlines()]
-            discarded_entries.update(ids)
-    except FileNotFoundError:
-        pass
-
-    return saved_entries, discarded_entries
+    return set(saved_entries), set(discarded_entries)
 
 
 def table_to_dict(table: pd.DataFrame, sorted_features=None):

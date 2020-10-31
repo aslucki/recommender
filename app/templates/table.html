@@ -43,6 +43,10 @@
             </table>
               {% if not hide_options %}
                 <p><a href="{{ url_for('display_stored') }}">Check saved entries!</a></p>
+              {% elif download_csv %}
+              <form autocomplete="Off" action="{{ url_for('display_stored') }}" method="post">
+                  <input id="submitBtn" type="submit" value="Download CSV">
+              </form>
               {% endif %}
           </div>
         </div>

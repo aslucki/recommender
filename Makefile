@@ -19,3 +19,6 @@ dev:
 
 lab:
 	jupyter lab --ip=0.0.0.0 --port=$(PORT) --allow-root --no-browser
+
+sqlite:
+	sqlite_web app/database/database.sqlite --host 0.0.0.0 --port $(PORT) --no-browser
