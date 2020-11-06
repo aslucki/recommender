@@ -8,6 +8,14 @@
 </head>
 
 <body>
+<script> var companies = {{ companies|tojson }}; </script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+
 <div class="box" id="particles-js"></div>
 <div class="container py-5">
     <form action="{{ url_for('logout') }}">
@@ -17,25 +25,35 @@
   <header class="text-center">
     <h1 class="display-4 text-white">Recommender</h1>
     <div class="autocomplete">
-        <form autocomplete="Off" action="{{ url_for('process') }}" method="post">
+        <form id="searchForm" autocomplete="Off" action="{{ url_for('process') }}" method="post">
             <input id="searchBar" type="text" name="searchBar" placeholder="Company name">
+            <button type="button" class="btn btn-warning rounded-0"
+                        id="extraSettingsButton">Filters</button>
+            <div class="modal" id="extraSettingsPanel" style="display: none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <label for="similarityThresh">Minimum accepted similarity:</label>
+                    <input type="range" id="similarityThresh" name="similarityThresh" value="99" min="90" max="100",
+                     style="width: 30%;" oninput="this.nextElementSibling.value = this.value">
+                    <output>99</output>
+                    <label for="same_country">Limit output to startups from the same country:</label>
+                    <input type="checkbox" name="filter" id="same_country" value="same_country">
+                    <label for="same_industry">Limit output to startups operating on at least one same industry:</label>
+                    <input type="checkbox" name="filter" id="same_industry" value="same_industry">
+                    <label for="has_linkedin">Limit output to startups with linkedin:</label>
+                    <input type="checkbox" name="filter" id="has_linkedin", value="has_linkedin">
+                </div>
+            </div>
             <input id="submitBtn" type="submit" value="Find similar companies!">
         </form>
     </div>
   </header>
 </div>
 
+
 <div id="tableBlock">
     {% block tableBlock %}{% endblock %}
 </div>
-
-
-<script> var companies = {{ companies|tojson }}; </script>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 <script src={{ url_for("static", filename="js/autocomplete.js") }}></script>
 <script src={{ url_for("static", filename="js/particles.js") }}></script>
 <script src={{ url_for("static", filename="js/apps.js") }}></script>

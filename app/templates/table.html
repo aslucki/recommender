@@ -6,9 +6,16 @@
         <div class="card-body p-5 bg-white rounded">
           <div class="table-responsive">
               {% if query %}
+                {% if not hide_options %}
+                 <button type="button" class="btn rounded-0">
+                     <a href="{{ url_for('display_stored') }}">Check saved entries!</a>
+                 </button>
+                {% endif %}
                 <h3>Companies similar to {{ query }}: </h3>
               {% endif %}
-            <table id="table" style="width:100%" class="table table-striped table-bordered">
+
+            <table id={{"table" if not hide_options else "table_no_options"}}
+              style="width:100%" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                     {% for column_name in table['columns'] %}
@@ -20,30 +27,47 @@
                     </tr>
                 </thead>
                 {% for row in table['rows'] %}
+                    {% set index = loop.index-1 %}
                     <tr class="mainEntry expand">
                         {% for value in row %}
-                            <td> {{ value }}</td>
+                            {% if 'http' in value|lower and 'linkedin' in value|lower %}
+                                <td>
+                                     <a href={{ value }} target="_blank">
+                                         <img border="0" alt="Linkedin"
+                                              src={{ url_for("static", filename="images/linkedin.png") }}
+                                         width="50px" height="50px">
+                                     </a>
+                                </td>
+                            {% elif 'http' in value|lower %}
+                                  <td>
+                                     <a href={{ value }} target="_blank">
+                                         <img border="0" alt="website"
+                                              src={{ url_for("static", filename="images/web.png") }}
+                                              width="50px" height="50px">
+                                     </a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    {% if loop.index == 2 and table['details'] %}
+                                        {{ value }}
+                                        <br/>
+                                        {% set text = table['details'][index] %}
+                                        <p style="color: blue;" data-toggle="tooltip" title="{{ text }}">Details</p>
+                                    {% else %}
+                                        {{ value }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                         {% endfor %}
                         {% if not hide_options %}
                             <td>
-                                <button type="button" class="btn btn-primary store">Save for later</button>
-                                <button type="button" class="btn btn-danger store">Discard</button>
+
                             </td>
                         {% endif %}
                     </tr>
-                    {% if table['details'] %}
-                        <tr style="display: none;">
-                            <td colspan={{ table['columns']|length }}>
-                            Most similar feature: {{ table['details'][loop.index-1][0] }} <br/>
-                            Most different feature: {{ table['details'][loop.index-1][-1] }}
-                            </td>
-                        </tr>
-                    {% endif %}
                 {% endfor %}
             </table>
-              {% if not hide_options %}
-                <p><a href="{{ url_for('display_stored') }}">Check saved entries!</a></p>
-              {% elif download_csv %}
+              {% if download_csv %}
               <form autocomplete="Off" action="{{ url_for('display_stored') }}" method="post">
                   <input id="submitBtn" type="submit" value="Download CSV">
               </form>

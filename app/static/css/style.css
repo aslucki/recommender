@@ -1,8 +1,23 @@
 body {
   min-height: 100vh;
-
   background-color: #333635;
   background-image: linear-gradient(147deg, #333635 0%, #8d8f8e 100%);
+}
+
+#extraSettingsButton {
+    background-color: #00C37A;
+}
+
+.btn-primary.store {
+    background-color: #2393F7;
+    width: 100%;
+    margin-top: 0.5em;
+}
+
+.btn-danger.store {
+    background-color: #CF2500;
+    width: 100%;
+    margin-top: 0.5em;
 }
 
 * { box-sizing: border-box; }
@@ -20,7 +35,7 @@ input {
 }
 input[type=text] {
   background-color: #f1f1f1;
-  width: 100%;
+  width: 80%;
 }
 input[type=submit] {
   background-color: DodgerBlue;
@@ -73,4 +88,58 @@ html{
     position: absolute;
     top: 0;
     left: 0;
+}
+
+
+#extraSettingsButton{
+    display: inline-block;
+    border: 1px solid transparent;
+    float: right;
+    width: 20%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+.tooltip-inner {
+    white-space: pre-line;
+    background-color: black;
+    color: white;
+    text-align: left;
+    width: 600px;
+}
+
+label, output {
+  display: inline-block;
+  text-align: left;
+}
+
+.modal {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 0 auto;
+  padding: 20px;
+  width: 80%;
+}
+
+.close {
+  color: #AAAAAA;
+  position: relative;
+  right: 0px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }

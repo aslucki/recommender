@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -47,9 +49,11 @@ class UserStartups(db.Model):
     user_name = db.Column(db.String)
     is_discarded = db.Column(db.Boolean)
     related_query = db.Column(db.String)
+    time = db.Column(db.DateTime)
 
     def __init__(self, startup_id, user_name, is_discarded, related_query):
         self.startup_id = startup_id
         self.user_name = user_name
         self.is_discarded = is_discarded
         self.related_query = related_query
+        self.time = datetime.now()

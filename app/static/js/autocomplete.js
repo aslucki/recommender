@@ -2,43 +2,62 @@ $(function() {
   $(document).ready(function() {
     autocomplete(document.getElementById("searchBar"), companies);
 
-    $('.store').click(function (event) {
-        event.stopPropagation();
-
-        var values = $(this).closest("tr").text() + '\n' + $(this).text();
-        var button = $(this);
-        var allButtons = $($(this).closest('td')).find('button');
-
-        $.ajax({
-            url: 'store',
-            type: 'POST',
-            data: JSON.stringify(values),
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            async: true,
-            cache: false,
-            processData: false,
-            success: function (result) {
-                button.text("Saved");
-                allButtons.prop('disabled', true);
+    var tableWithButtons = $('#table').DataTable( {
+        "drawCallback": function( settings ) {
+            $('[data-toggle="tooltip"]').tooltip();
             },
-            error: function(){
-                alert("error in ajax form submission");
-            }
-        });
+        "order": [],
+        "columnDefs": [ {
+            "targets": -1,
+            "data": null,
+            "defaultContent": '<button type="button" class="btn btn-primary rounded-0 store">Save for later</button>'
+                             +'<button type="button" class="btn btn-danger rounded-0 store">Discard</button>'
+        } ]
+    });
 
-        return false;
-       });
+    $('#table tbody').on( 'click', '.store', function () {
+        store(this);
+    } );
 
-     $('.mainEntry').click(function(){
-        $(this).toggleClass('expand').nextUntil('tr.mainEntry').slideToggle(100);
+    $('#table_no_options').DataTable();
+
+    $('#extraSettingsButton').click(function(){
+        $('.modal').toggle();
+     });
+
+    $('.close').click(function(){
+        $('.modal').toggle();
      });
 
   });
 });
 
+function store(clicked_object) {
 
+    var values = $(clicked_object).closest("tr").text() + '\n' + $(clicked_object).text();
+    var button = $(clicked_object);
+    var allButtons = $($(clicked_object).closest('td')).find('button');
 
+    $.ajax({
+        url: 'store',
+        type: 'POST',
+        data: JSON.stringify(values),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        async: true,
+        cache: false,
+        processData: false,
+        success: function (result) {
+            button.text("Saved");
+            allButtons.prop('disabled', true);
+        },
+        error: function(){
+            alert("error in ajax form submission");
+        }
+    });
+
+    return false;
+};
 
 
 function autocomplete(inp, arr) {
@@ -59,9 +78,13 @@ function autocomplete(inp, arr) {
       /*append the DIV element as a child of the autocomplete container:*/
       this.parentNode.appendChild(a);
       /*for each item in the array...*/
+
+      var n_matches = 0;
       for (i = 0; i < arr.length; i++) {
         /*check if the item starts with the same letters as the text field value:*/
         if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          if (n_matches == 10) { break; }
+          n_matches += 1;
           /*create a DIV element for each matching element:*/
           b = document.createElement("DIV");
           /*make the matching letters bold:*/

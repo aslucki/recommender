@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 
 from flask import (Flask, render_template,
                    request, make_response, url_for,
@@ -7,10 +8,12 @@ from flask_login import (LoginManager, login_user,
                          login_required, current_user,
                          logout_user)
 from flask_bcrypt import Bcrypt
+from sqlalchemy.inspection import inspect
+import pandas as pd
 
 from db_models import db, User, UserStartups
 from model import Recommender
-from utils import load_stored_ids, table_to_dict
+from utils import load_stored_ids, table_to_dict, get_columns_info
 
 
 app = Flask(__name__)
@@ -61,7 +64,8 @@ def login():
                 db.session.commit()
                 login_user(user, remember=True)
 
-                return redirect(url_for('home'))
+        return redirect(url_for('home'))
+
     else:
         return render_template('login.html')
 
@@ -94,9 +98,13 @@ def home():
 @app.route('/', methods=["POST"])
 @login_required
 def process():
-    company_name = request.form["searchBar"]
 
-    if not company_name:
+    company_name = request.form['searchBar']
+    threshold = request.form['similarityThresh']
+    filters = request.form.getlist('filter')
+    threshold = int(threshold) / 100
+
+    if company_name is None or company_name.strip() == "":
         return redirect(url_for('home'))
 
     stored_data =\
@@ -107,8 +115,12 @@ def process():
     most_similar_companies, sorted_features =\
         recommender.find_most_similar(
             company_name,
-            restricted_ids=saved_entries.union(discarded_entries))
+            restricted_ids=saved_entries.union(discarded_entries),
+            threshold=threshold,
+            filters=filters
+        )
 
+    most_similar_companies = most_similar_companies[get_columns_info()['limited_output']]
     output = table_to_dict(most_similar_companies, sorted_features)
     response =\
         make_response(render_template('table.html', query=company_name, table=output,
@@ -139,10 +151,23 @@ def store_entry():
     return "200"
 
 
-@app.route('/companies')
+@app.route('/display_users', methods=["GET", "POST"])
 @login_required
-def show_available_data():
-    output = table_to_dict(recommender.data)
+def display_users():
+
+    def query_to_dict(rset):
+        result = defaultdict(list)
+        for obj in rset:
+            instance = inspect(obj)
+            for key, x in instance.attrs.items():
+                result[key].append(x.value)
+        return result
+
+    all_users = UserStartups.query.all()
+    query_dict = query_to_dict(all_users)
+    df = pd.DataFrame(query_dict)
+    output = table_to_dict(df)
+
     return render_template('table.html', table=output,
                            companies=recommender.companies,
                            hide_options=True)
@@ -153,7 +178,6 @@ def show_available_data():
 def display_stored():
 
     stored_data = UserStartups.query.filter_by(user_name=current_user.name).all()
-
     saved_ids, _ = load_stored_ids(stored_data)
     data = recommender.data[recommender.data['ID'].isin(saved_ids)]
 
